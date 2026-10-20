@@ -1,0 +1,48 @@
+/* shared by the five intro pitches: brand tokens, fonts, caret, grain, the Foodee hand-off (from ../../index.html) */
+@font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("../assets/fonts/space-grotesk-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("../assets/fonts/space-grotesk-latin-ext-500-normal.woff2") format("woff2"); unicode-range: U+0100-024F; }
+@font-face { font-family: "Space Grotesk"; font-weight: 600; src: url("../assets/fonts/space-grotesk-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Space Grotesk"; font-weight: 700; src: url("../assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 400; src: url("../assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 500; src: url("../assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; src: url("../assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("../assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; src: url("../assets/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); }
+
+:root {
+  --ink: #000; --paper: #0e0e0e; --panel: #111; --line: #212121;
+  --cream: #ede7df; --white: #f6f3ee; --muted: #a2a2a2; --muted-light: #e7e7e7;
+  --glow: #14b8a6; --glow-light: #5eead4; --glow-dark: #0d9488; --glow-darkest: #0f766e;
+  --display: "Space Grotesk", sans-serif; --body: "Inter", sans-serif; --mono: "JetBrains Mono", monospace;
+}
+html, body { margin: 0; background: #000; }
+body { color: var(--white); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+#root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+.clip { position: absolute; inset: 0; overflow: hidden; }
+.layer { position: absolute; inset: 0; }
+
+/* text cursor: absolute (.caret) or in the flow of a typed line (.icaret) */
+.caret { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.caret .stem { position: absolute; left: 0; bottom: 0; border-radius: 2px; background: var(--white); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.28); }
+.caret.teal .stem, .icaret { background: var(--glow); box-shadow: 0 0 18px rgba(20, 184, 166, 0.85), 0 0 3px rgba(94, 234, 212, 0.9); }
+.icaret { display: inline-block; width: 0.055em; height: 0.82em; margin-left: 0.06em; vertical-align: -0.08em; border-radius: 2px; }
+.ch { display: none; }
+/* select-all highlight behind a typed line */
+.sel { position: relative; display: inline-block; }
+.sel > .hl { position: absolute; left: -0.06em; right: -0.06em; top: 0.02em; bottom: -0.04em; background: var(--glow); transform-origin: 0 50%; }
+.sel > .tx { position: relative; }
+.ln { position: relative; display: block; overflow: hidden; padding: 0 6px 14px; margin-bottom: -10px; }
+.ln > span { display: block; }
+
+/* the teal diamond that floods the frame into the hand-off */
+.flood { position: absolute; left: 0; top: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px; background: var(--glow); }
+
+/* hand-off: the real Foodee design, renamed ROSA'S (scene C of the film) */
+#tail { z-index: 10; background: #000; }
+#tail .tealbg { background: var(--glow); }
+.cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.card { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform: translate(60px, 33.75px) scale(0.9375); transform-origin: 0 0;
+  border-radius: 28px; overflow: hidden; box-shadow: 0 50px 140px rgba(0,0,0,0.65), 0 0 0 1.5px rgba(255,255,255,0.10); background: #111; }
+.card img.st { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; opacity: 0; }
+
+#grain { position: absolute; inset: -64px; background: url("../assets/brand/grain.png"); opacity: 0.07; mix-blend-mode: overlay; z-index: 30; pointer-events: none; }

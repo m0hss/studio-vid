@@ -7,14 +7,16 @@ node_modules/
 .tools/
 
 # Render outputs and logs (regenerable with `hyperframes render`)
-# The final delivery video is kept; other renders are not.
+# The final delivery video and the intro pitches are kept; other renders are not.
 out/*
 !out/fixbyte-studio-promo.mp4
+!out/intros/
 project/renders/
 *.log
 *.mp4
 *.mov
 !out/fixbyte-studio-promo.mp4
+!out/intros/*.mp4
 
 # Screen recordings (large, not needed to build the video)
 assets/screencasts/

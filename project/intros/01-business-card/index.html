@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Intro 1 — The Business Card</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="_shared/intro.css" />
+    <style>
+      #s1 { background: radial-gradient(60% 70% at 28% 18%, #2a2420 0%, #0d0b0a 55%, #050404 100%); }
+      #cam { position: absolute; inset: 0; }
+      #stage { position: absolute; inset: 0; perspective: 2200px; perspective-origin: 50% 46%; }
+      #cardG { position: absolute; left: 435px; top: 240px; width: 1050px; height: 600px; }
+      #card3d { position: absolute; inset: 0; transform-style: preserve-3d; }
+      .face { position: absolute; inset: 0; border-radius: 12px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+        box-shadow: 0 50px 110px rgba(0,0,0,0.65), 0 8px 24px rgba(0,0,0,0.4); }
+      /* cotton paper: cream + fine fibre noise */
+      .paper { background-color: #ede7df;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.2  0 0 0 0.16 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+      .press { text-shadow: 0 1.5px 0 rgba(255,255,255,0.55), 0 -1px 0 rgba(0,0,0,0.22); }
+      #front { padding: 64px 76px; box-sizing: border-box; color: #8e1b10; }
+      #front .kick { font: 500 22px/1 var(--mono); letter-spacing: 0.32em; }
+      #front .nm { margin-top: 118px; font: 700 168px/0.9 var(--display); letter-spacing: -0.02em; }
+      #front .rule { position: absolute; left: 76px; right: 76px; bottom: 116px; height: 2px; background: #8e1b10; opacity: 0.7; }
+      #front .ad { position: absolute; left: 76px; right: 76px; bottom: 62px; display: flex; justify-content: space-between; font: 500 25px/1 var(--body); }
+      #sheen { position: absolute; inset: -20% -60%; background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.28) 50%, transparent 62%); mix-blend-mode: soft-light; }
+      #back { transform: rotateY(180deg); background-color: #8e1b10; color: #ede7df; padding: 70px 80px; box-sizing: border-box; }
+      #back .nm { font: 700 44px/1 var(--display); letter-spacing: 0.02em; }
+      #back .rows { position: absolute; left: 80px; right: 80px; top: 238px; font: 400 34px/1 var(--mono); }
+      #back .row { display: flex; align-items: baseline; height: 84px; }
+      #back .k { width: 150px; opacity: 0.6; letter-spacing: 0.08em; font-size: 26px; }
+      #back .v { position: relative; flex: 1; white-space: nowrap; }
+      #webLine { position: absolute; left: 0; width: 560px; bottom: -12px; height: 2px; background: rgba(237,231,223,0.55); }
+      #webSel .tx { color: #ede7df; }
+      #back .pressd { text-shadow: 0 -1px 0 rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.12); }
+      #line { position: absolute; left: 0; right: 0; top: 858px; display: flex; justify-content: center; }
+      #line .ln { font: 500 80px/1.08 var(--display); letter-spacing: -0.03em; color: var(--white); }
+      #line .t { color: var(--glow-light); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="10">
+      <section id="s1" class="clip" data-start="0" data-duration="8.1" data-track-index="1">
+        <div id="cam">
+          <div id="stage">
+            <div id="cardG">
+              <div id="card3d">
+                <div class="face paper" id="front">
+                  <div class="kick press">CUISINE MAISON</div>
+                  <div class="nm press">ROSA'S</div>
+                  <div class="rule"></div>
+                  <div class="ad press"><span>Rue de l'Exemple 12 · 1000 Bruxelles</span><span>+32 2 000 00 00</span></div>
+                  <div id="sheen"></div>
+                </div>
+                <div class="face paper" id="back">
+                  <div class="nm pressd">ROSA'S</div>
+                  <div class="rows pressd">
+                    <div class="row"><span class="k">TEL</span><span class="v">+32 2 000 00 00</span></div>
+                    <div class="row"><span class="k">ADDR</span><span class="v">Rue de l'Exemple 12, Bruxelles</span></div>
+                    <div class="row"><span class="k">WEB</span><span class="v"><span class="sel" id="webSel"><span class="hl"></span><span class="tx" id="webTx"></span></span><span id="webLine"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="line"><div class="ln" id="l1"><span>Everything but <span class="t">the website.</span></span></div></div>
+        </div>
+        <div class="flood" id="flood"></div>
+      </section>
+      <section id="tail" class="clip" data-start="7.98" data-duration="2.02" data-track-index="2"></section>
+      <div id="grain"></div>
+      <audio id="sfx" src="sfx.wav" data-start="0" data-duration="10" data-track-index="0" data-volume="1"></audio>
+    </div>
+    <script src="_shared/intro.js"></script>
+    <script>
+      document.fonts.ready.then(() => {
+        const tl = gsap.timeline({ paused: true });
+        const { E } = IK;
+        const card = document.getElementById("card3d");
+
+        // 0.0–1.75  the front, raked light, slow drift
+        gsap.set(card, { rotationY: -24, rotationX: 12, rotationZ: -3 });
+        tl.to(card, { rotationY: -10, rotationX: 9, rotationZ: -2, duration: 1.75, ease: "sine.inOut" }, 0);
+        tl.fromTo("#cam", { scale: 1.06 }, { scale: 1.0, duration: 2.4, ease: "power2.out" }, 0);
+        tl.fromTo("#sheen", { xPercent: -45 }, { xPercent: 45, duration: 2.0, ease: "power1.inOut" }, 0);
+        // 1.75–2.65  turn it over
+        tl.to(card, { rotationY: 180, rotationX: 0, rotationZ: 0, duration: 0.9, ease: E.io3 }, 1.75);
+
+        // the back: an empty WEB line with a cursor
+        const web = IK.chars(document.getElementById("webTx"), "rosas.be");
+        tl.set(web.caret, { opacity: 0 }, 0);
+        IK.blink(tl, web.caret, 2.75, 5.95);
+
+        // 3.5–5.4  card lifts, the line lands under it
+        tl.to("#cardG", { y: -78, scale: 0.9, duration: 0.7, ease: E.io3 }, 3.45);
+        IK.rise(tl, "#l1 > span", 3.75, 0, 0.8);
+        tl.to("#line", { opacity: 0, y: -24, duration: 0.35, ease: "power2.in" }, 5.25);
+        tl.to("#cardG", { y: 0, scale: 1, duration: 0.6, ease: E.io3 }, 5.35);
+
+        // push toward the WEB row and type the address
+        tl.seek(2.8);
+        const wr = document.getElementById("webSel").getBoundingClientRect();
+        tl.seek(0);
+        gsap.set("#cam", { transformOrigin: `${wr.left + 120}px ${wr.top + wr.height / 2}px` });
+        tl.to("#cam", { scale: 1.32, duration: 2.2, ease: "power2.inOut" }, 5.4);
+        const last = IK.type(tl, web.cs, 5.95, 0.085);
+        IK.blink(tl, web.caret, last + 0.2, 7.0, 0.4);
+        IK.select(tl, document.getElementById("webSel"), 7.0);
+        tl.set(web.caret, { opacity: 0 }, 7.12);
+
+        // 7.58  the selection floods the frame
+        tl.seek(7.5);
+        const cr = web.caret.getBoundingClientRect();
+        tl.seek(0);
+        IK.flood(tl, document.getElementById("flood"), cr.left + cr.width / 2, cr.top + cr.height / 2, 7.58);
+
+        IK.tail(tl);
+        IK.done(tl);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>

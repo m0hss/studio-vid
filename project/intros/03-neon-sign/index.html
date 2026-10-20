@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Intro 3 — The Neon Sign</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="_shared/intro.css" />
+    <style>
+      #s3 { background: #050807; }
+      /* plaster wall: faint vertical streaks */
+      #wall { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0 2px, transparent 2px 9px), radial-gradient(90% 80% at 50% 45%, #0b1110, #030504 80%); }
+      #wallGlow { background: radial-gradient(48% 40% at 50% 47%, rgba(20,184,166,0.42), rgba(13,148,136,0.14) 50%, transparent 78%); opacity: 0; transform-origin: 50% 47%; }
+      #cam { position: absolute; inset: 0; }
+      svg#neon { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+      .tube { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+      .off { stroke: rgba(94,234,212,0.13); stroke-width: 7; }
+      .lit { stroke: #e9fffb; stroke-width: 4.5; }
+      #gA, #gB { filter: drop-shadow(0 0 5px #5eead4) drop-shadow(0 0 18px #14b8a6) drop-shadow(0 0 48px rgba(20,184,166,0.8)); }
+      .fA { font: 500 196px/1 var(--display); letter-spacing: -0.01em; }
+      .fB { font: 700 300px/1 var(--display); letter-spacing: 0.01em; }
+      #ncaret { fill: var(--glow); filter: drop-shadow(0 0 8px #14b8a6); }
+      #fill { background: var(--glow); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="10">
+      <section id="s3" class="clip" data-start="0" data-duration="8.1" data-track-index="1">
+        <div id="wall" class="layer"></div>
+        <div id="wallGlow" class="layer"></div>
+        <div id="cam">
+          <svg id="neon" viewBox="0 0 1920 1080">
+            <text id="offA" class="tube off fA" x="960" y="610" text-anchor="middle"></text>
+            <text id="offB" class="tube off fB" x="960" y="650" text-anchor="middle"></text>
+            <g id="gA"><text id="litA" class="tube lit fA" x="960" y="610" text-anchor="middle"></text></g>
+            <g id="gB"><text id="litB" class="tube lit fB" x="960" y="650" text-anchor="middle"></text></g>
+            <rect id="ncaret" width="9" height="150" rx="3" opacity="0"></rect>
+          </svg>
+        </div>
+        <div id="fill" class="layer"></div>
+      </section>
+      <section id="tail" class="clip" data-start="7.98" data-duration="2.02" data-track-index="2"></section>
+      <div id="grain"></div>
+      <audio id="sfx" src="sfx.wav" data-start="0" data-duration="10" data-track-index="0" data-volume="1"></audio>
+    </div>
+    <script src="_shared/intro.js"></script>
+    <script>
+      const NS = "http://www.w3.org/2000/svg";
+      function spans(id, text) {
+        const t = document.getElementById(id);
+        return [...text].map((c) => { const s = document.createElementNS(NS, "tspan"); s.textContent = c; t.appendChild(s); return s; });
+      }
+      document.fonts.ready.then(() => {
+        const tl = gsap.timeline({ paused: true });
+        const A = "Your Name Here", B = "ROSA'S";
+        const offA = spans("offA", A), litA = spans("litA", A), offB = spans("offB", B), litB = spans("litB", B);
+        const tA = document.getElementById("offA"), tB = document.getElementById("offB");
+        // glyph edges, for the cursor
+        const endA = (i) => tA.getEndPositionOfChar(i).x, endB = (i) => tB.getEndPositionOfChar(i).x;
+        const startA0 = tA.getStartPositionOfChar(0).x, startB0 = tB.getStartPositionOfChar(0).x;
+        const cur = document.getElementById("ncaret");
+        const curAt = (x, t, y = 470, h = 165) => tl.set(cur, { attr: { x: x + 14, y, height: h } }, t);
+        // flicker: [time, level] pairs applied to the lit group and the wall glow together
+        const flick = (g, pairs, glowMax = 1) => pairs.forEach(([t, v]) => { tl.set(g, { opacity: v }, t); tl.set("#wallGlow", { opacity: v * glowMax }, t); });
+
+        gsap.set([...offB, ...litB], { visibility: "hidden" });
+        gsap.set("#gA, #gB", { opacity: 0 });
+
+        // 0.25–1.3  "Your Name Here" strikes on, stuttering, while its tubes draw
+        gsap.set("#litA", { strokeDasharray: 1600, strokeDashoffset: 1600 });
+        tl.to("#litA", { strokeDashoffset: 0, duration: 1.05, ease: "power1.inOut" }, 0.25);
+        flick("#gA", [[0.25, 1], [0.31, 0.1], [0.36, 0.9], [0.44, 0.2], [0.5, 1], [0.62, 0.55], [0.66, 1], [2.2, 0.78], [2.26, 1]]);
+        // 3.0–3.45  it sputters and dies
+        flick("#gA", [[3.0, 0.3], [3.06, 1], [3.15, 0.1], [3.22, 0.8], [3.3, 0], [3.36, 0.55], [3.45, 0]]);
+
+        // 3.7  a cursor in the dark, at the end of the dead sign; it deletes the tubes one by one
+        curAt(endA(A.length - 1), 3.7);
+        IK.blink(tl, cur, 3.7, 4.3, 0.3);
+        for (let k = 0; k < A.length; k++) {
+          const i = A.length - 1 - k, t = 4.3 + k * 0.045;
+          tl.set([offA[i], litA[i]], { visibility: "hidden" }, t);
+          curAt(i > 0 ? endA(i - 1) : startA0 - 14, t);
+        }
+        // 5.0–5.5  types ROSA'S; each tube lights as it lands
+        curAt(startB0 - 14, 4.95, 420, 240);
+        tl.set("#gB", { opacity: 1 }, 5.0);
+        for (let i = 0; i < B.length; i++) {
+          const t = 5.0 + i * 0.1;
+          tl.set([offB[i], litB[i]], { visibility: "visible" }, t);
+          tl.fromTo(litB[i], { opacity: 0.25 }, { opacity: 1, duration: 0.06, ease: "steps(2)" }, t);
+          curAt(endB(i), t, 420, 240);
+        }
+        flick("#gB", [[5.0, 0.8], [5.5, 0.6], [5.54, 1]], 1.15);
+        IK.blink(tl, cur, 5.75, 6.5, 0.4);
+        tl.set(cur, { opacity: 0 }, 6.5);
+
+        // 6.6–7.95  the glow blooms until the frame is teal
+        tl.fromTo("#cam", { scale: 1 }, { scale: 1.12, duration: 1.4, ease: "power2.in", transformOrigin: "50% 52%" }, 6.55);
+        tl.to("#wallGlow", { scale: 3.2, opacity: 1, duration: 1.3, ease: "power2.in" }, 6.65);
+        tl.to("#fill", { opacity: 1, duration: 0.5, ease: "power2.in" }, 7.45);
+
+        IK.tail(tl);
+        IK.done(tl);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
