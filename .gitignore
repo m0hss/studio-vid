@@ -1,1 +1,50 @@
-.tools
+# Dependencies (regenerate with npm install)
+node_modules/
+.npm/
+.cache/
+
+# Local tooling: ffmpeg/ffprobe symlinks point at a machine-specific path
+.tools/
+
+# Render outputs and logs (regenerable with `hyperframes render`)
+out/
+project/renders/
+*.log
+*.mp4
+*.mov
+
+# HyperFrames local state and locks
+.hyperframes/
+
+# Build intermediates (regenerate with tools/build_audio.py)
+project/assets/audio/mix_raw.wav
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Package manager debug output
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors and OS junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temp files
+*.tmp
+*.bak
