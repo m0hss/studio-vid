@@ -148,13 +148,17 @@ def reverse_swell(d=0.42):
     return y.astype(np.float32)
 
 
-# --- opening: selection frame appears on the cup
-place(blip(700, 1100, 0.08), 1.60, 0.1, 0.25)
-# zoom-out of the cup into the first line
-place(whoosh(0.42, 300, 3600, 700, 0.8), 3.62, 0, 0.21)
-# "We take that literally." select-all, then teal flood
-place(blip(800, 1600, 0.12), 7.42, 0, 0.28)
-place(whoosh(0.40, 500, 4200, 1200, 0.85), 7.62, 0, 0.22)
+# --- opening: rosas.com typed into the address bar (as tools/build_intro_sfx.py, intro 2)
+for k in range(9):
+    place(tick(1.0 + rng.uniform(-0.08, 0.08)), 0.42 + k * 0.085, rng.uniform(-0.1, 0.1), 0.34 + rng.uniform(-0.05, 0.05))
+place(tick(0.7), 1.35, 0, 0.55)                                   # enter
+place(whoosh(0.9, 2400, 2600, 300, 0.1), 1.4, 0, 0.08)            # pull back to the window
+place(blip(420, 300, 0.28), 2.5, 0, 0.3)                          # 404
+place(tick(1.15), 5.9, 0, 0.3)                                    # reload
+place(whoosh(1.3, 300, 3200, 900, 0.85), 6.3, 0, 0.1)             # push in on the address
+# select-all, then teal flood
+place(blip(800, 1600, 0.12), 6.75, 0, 0.28)
+place(whoosh(0.40, 500, 4200, 1200, 0.85), 7.6, 0, 0.22)
 
 # typing: (select time, delete time, first letter time, step, count, pan)
 TYPE = [

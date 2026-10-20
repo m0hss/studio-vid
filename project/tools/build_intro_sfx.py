@@ -145,7 +145,7 @@ a.write("01-business-card")
 
 # 2 · address bar
 b = Track()
-b.typing(0.42, 0.085, 8)
+b.typing(0.42, 0.085, 9)
 b.place(tick(0.7), 1.35, 0, 0.55)                                 # enter
 b.place(whoosh(0.9, 2400, 2600, 300, 0.1), 1.4, 0, 0.08)          # pull back
 b.place(blip(420, 300, 0.28), 2.5, 0, 0.3)                        # nothing there

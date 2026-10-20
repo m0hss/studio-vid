@@ -27,7 +27,7 @@
       #err .c { margin-top: 26px; font: 400 20px/1 var(--mono); letter-spacing: 0.06em; color: #555; }
       #lines { position: absolute; left: 0; right: 0; top: 270px; display: flex; flex-direction: column; align-items: center; }
       #lines .ln { font: 500 96px/1.08 var(--display); letter-spacing: -0.035em; color: var(--white); }
-      #lines #m2 { color: #8a8a8a; }
+      #lines #m2 { color: var(--glow-light); }
     </style>
   </head>
   <body>
@@ -46,9 +46,9 @@
             <div id="page">
               <div id="err">
                 <svg width="120" height="140" viewBox="0 0 120 140"><path d="M14 6h64l28 28v100H14z" fill="none" stroke="#4d4d4d" stroke-width="5" stroke-linejoin="round"/><path d="M78 6v28h28" fill="none" stroke="#4d4d4d" stroke-width="5" stroke-linejoin="round"/><path d="M44 72l32 32M76 72l-32 32" stroke="#4d4d4d" stroke-width="5" stroke-linecap="round"/></svg>
-                <div class="t">Server not found</div>
-                <div class="s">Nothing answers at rosas.be.</div>
-                <div class="c">ERR_NAME_NOT_RESOLVED</div>
+                <div class="t">404 Not Found</div>
+                <div class="s">Nothing answers at rosas.com.</div>
+                <div class="c">HTTP ERROR 404</div>
               </div>
               <div id="lines">
                 <div class="ln" id="m1"><span>Rosa's has been open for years.</span></div>
@@ -75,7 +75,7 @@
         gsap.set("#cam", { transformOrigin: `${px}px ${py}px` });
         tl.fromTo("#cam", { scale: 2.1, x: cx, y: cy }, { scale: 1.95, duration: 1.4, ease: "none" }, 0);
         gsap.set("#prog", { scaleX: 0 });
-        const u = IK.chars(document.getElementById("url"), "rosas.be");
+        const u = IK.chars(document.getElementById("url"), "rosas.com");
         IK.blink(tl, u.caret, 0, 0.4, 0.4);
         tl.set("#ph", { opacity: 0 }, 0.4);
         const last = IK.type(tl, u.cs, 0.42, 0.085);

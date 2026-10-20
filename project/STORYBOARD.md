@@ -1,8 +1,8 @@
 # Fixbyte Studio — "Your Name Here" (30.00 s · 1920×1080 · 30 fps)
 
 ## Concept
-Every template ships with a placeholder. One of Fixbyte's own designs (Common Grounds)
-literally has *"Your Name Here"* handwritten on its coffee cup. The film takes that literally:
+Rosa's has been open for years, but type *rosas.com* into a browser and you get a 404.
+The film opens on that empty address bar, then takes the address back:
 a text cursor travels through Fixbyte's real, live designs and types a local owner's name into
 each one, in that design's own typography. Inside the designs the cursor and the text selection take
 the colour of the design's own text; on the dark brand scenes the cursor is Fixbyte teal. In the drop,
@@ -22,8 +22,10 @@ of the "typing" is the actual site rendering the new name (tools/capture/). The 
 ## Shots
 | t | Shot | Copy |
 |---|------|------|
-| 0.0–4.0 | Macro push on the Common Grounds cup; a design-tool selection frame tags it `PLACEHOLDER` | (the cup: "Your Name Here") |
-| 4.0–8.0 | Ink black, Space Grotesk; caret blinks; text is selected, selection floods the frame teal | **We take that literally.** |
+| 0.0–1.35 | Tight on an empty, unbranded browser address bar; the teal caret types `rosas.com` | — |
+| 1.35–3.6 | ⏎, pull back to the window; the load bar stalls; **404 Not Found** · "Nothing answers at rosas.com." | — |
+| 3.6–5.6 | The line, in the empty page (second line teal) | **Rosa's has been open for years. / Online, it doesn't exist.** |
+| 5.6–8.0 | Reload; push in on the address, select-all; the selection floods the frame teal as a diamond from the cursor | — |
 | 8.0–10.5 | Foodee → select → delete → types **ROSA'S** into the giant spotted wordmark | — |
 | 10.3–13.2 | Cantara: macro on the nav logo, types **MAISON NOOR**, pulls back to the full design on the 12.0 hit | — |
 | 13.2–16.0 | Dar Al Khalily → **AZUR VOYAGES** (huge, bottom of frame) | — |
@@ -33,6 +35,7 @@ of the "typing" is the actual site rendering the new name (tools/capture/). The 
 | 24.0–30.0 | DROP: lockup unfolds from the cursor, which becomes Studio's i; diamonds pop onto both i's, teal glow | **Fixbyte Studio** · studio.fixbyte.be · **Try it free** (held 25.4–29.4, fade 29.4–30) |
 
 ## Sound design
-Typing ticks and select blips on each keystroke; whooshes on the three pushes; a soft
+Typing ticks and select blips on each keystroke (from `rosas.com` on); an enter key, a dull blip on the 404,
+a reload click; whooshes on the pushes; a soft
 message chime; a reverse swell into the drop and a sub hit under it. All synthesized
 (tools/build_audio.py), mixed under the music.
