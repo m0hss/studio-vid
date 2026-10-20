@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Fixbyte Studio — Your Name Here</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("assets/fonts/space-grotesk-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F; }
+      @font-face { font-family: "Space Grotesk"; font-weight: 500; src: url("assets/fonts/space-grotesk-latin-ext-500-normal.woff2") format("woff2"); unicode-range: U+0100-024F; }
+      @font-face { font-family: "Space Grotesk"; font-weight: 600; src: url("assets/fonts/space-grotesk-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Space Grotesk"; font-weight: 700; src: url("assets/fonts/space-grotesk-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 500; src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Aller"; font-weight: 700; src: url("assets/fonts/Aller_Std_Bd.ttf") format("truetype"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 500; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); }
+
+      /* brand tokens, from studio.fixbyte.be :root */
+      :root {
+        --ink: #000; --paper: #0e0e0e; --panel: #111; --line: #212121;
+        --cream: #ede7df; --white: #f6f3ee; --muted: #a2a2a2; --muted-light: #e7e7e7;
+        --glow: #14b8a6; --glow-light: #5eead4; --glow-dark: #0d9488; --glow-darkest: #0f766e;
+        --display: "Space Grotesk", sans-serif; --body: "Inter", sans-serif; --mono: "JetBrains Mono", monospace;
+      }
+      html, body { margin: 0; background: #000; }
+      body { color: var(--white); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: radial-gradient(70% 60% at 50% 50%, #06100f, #000 70%); }
+      .clip { position: absolute; inset: 0; overflow: hidden; }
+      .layer { position: absolute; inset: 0; }
+
+      /* caret: a plain text cursor in the colour of the text it is typing */
+      .caret { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+      .caret .stem { position: absolute; left: 0; bottom: 0; border-radius: 2px; background: var(--white); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.28); }
+      /* on the dark brand scenes the cursor is teal */
+      .caret.teal .stem { background: var(--glow); box-shadow: 0 0 18px rgba(20, 184, 166, 0.85), 0 0 3px rgba(94, 234, 212, 0.9); }
+
+      /* ---------- A: the cup ---------- */
+      #sA { background: #f9efe5; z-index: 1; }
+      #cupWrap { position: absolute; left: -172px; top: -272px; width: 1899px; height: 1776px; }
+      #cupWrap img { position: absolute; left: 0; top: 0; width: 1899px; height: 1776px; }
+      #selFrame { position: absolute; left: 905px; top: 545px; width: 455px; height: 545px; }
+      #selFrame .box { position: absolute; inset: 0; border: 4px solid var(--glow); }
+      #selFrame .h { position: absolute; width: 16px; height: 16px; background: #fff; border: 3px solid var(--glow); box-sizing: border-box; }
+      #selFrame .tag { position: absolute; left: -4px; top: -66px; height: 56px; padding: 0 18px; display: flex; align-items: center;
+        background: var(--glow); color: #001; font: 500 34px/1 var(--mono); letter-spacing: 0.06em; white-space: nowrap; }
+      #cupVeil { background: #000; }
+
+      /* ---------- B: the line ---------- */
+      #sB { z-index: 2; background: #000; }
+      #sB .glow { background: radial-gradient(60% 50% at 50% 115%, rgba(20,184,166,0.30), rgba(15,118,110,0.10) 45%, transparent 75%); }
+      #lineB { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; }
+      .ln { position: relative; display: block; overflow: hidden; padding: 0 6px 14px; margin-bottom: -10px; }
+      .ln > span { display: block; }
+      #lineB .ln { font: 500 150px/1.08 var(--display); letter-spacing: -0.035em; color: var(--white); }
+      #lineB .hl { position: absolute; left: 0; top: 6px; bottom: 18px; width: 100%; background: var(--glow); transform-origin: 0 50%; }
+      #lineB .tx { position: relative; }
+      #flood { position: absolute; left: 0; top: 0; width: 10px; height: 10px; background: var(--glow); }
+
+      /* ---------- C: designs ---------- */
+      .dz { background: #000; }
+      .dz .tealbg { background: var(--glow); }
+      .dz .bgglow { background: radial-gradient(70% 60% at 50% 50%, rgba(20,184,166,0.10), transparent 70%); }
+      .cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+      .card { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform: translate(60px, 33.75px) scale(0.9375); transform-origin: 0 0;
+        border-radius: 28px; overflow: hidden; box-shadow: 0 50px 140px rgba(0,0,0,0.65), 0 0 0 1.5px rgba(255,255,255,0.10); background: #111; }
+      .card img.st { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; opacity: 0; }
+      .card img.hi { position: absolute; opacity: 0; }
+      /* Cantara's page continues above the card during the macro on its nav logo */
+      #kExt { position: absolute; left: 60px; width: 1800px; top: -1166px; height: 1203px;
+        background: linear-gradient(90deg, #f5f2ec 0%, #f3efec 30%, #eae8e7 50%, #dfe1e5 70%, #dbdfe2 100%); }
+      #sR { z-index: 3; } #sK { z-index: 4; } #sZ { z-index: 5; }
+
+      /* ---------- D: wall ---------- */
+      #sW { z-index: 6; background: #000; }
+      #wallPersp { position: absolute; inset: 0; perspective: 1500px; perspective-origin: 50% 45%; }
+      #wall { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+      #wallGrid { position: absolute; left: -1890px; top: -790px; width: 3780px; display: grid; grid-template-columns: repeat(7, 512px); gap: 32px; }
+      #wallGrid .cell { width: 512px; height: 288px; border-radius: 14px; overflow: hidden; background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.08); position: relative; }
+      #wallGrid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #wallGrid .cell.mine { box-shadow: 0 0 0 3px var(--glow), 0 0 40px rgba(20,184,166,0.45); }
+      #wallScrim { background: radial-gradient(55% 48% at 50% 50%, rgba(0,0,0,0.86), rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.25)); }
+      #wallVeil { background: #000; opacity: 0; }
+      #lineW { position: absolute; left: 0; right: 0; top: 352px; display: flex; flex-direction: column; align-items: center; }
+      #lineW .ln { font: 500 128px/1.08 var(--display); letter-spacing: -0.035em; color: var(--white); }
+      .teal { color: var(--glow-light); }
+
+      /* ---------- E: offer ---------- */
+      #sO { z-index: 7; }
+      #offerHead { position: absolute; left: 192px; top: 352px; width: 900px; }
+      #offerHead .ln { font: 500 112px/1.06 var(--display); letter-spacing: -0.035em; color: var(--white); }
+      #chips { position: absolute; left: 196px; top: 628px; display: flex; gap: 20px; }
+      .chip { display: flex; align-items: center; gap: 14px; height: 70px; padding: 0 30px 0 24px; border-radius: 999px;
+        border: 1.5px solid rgba(255,255,255,0.22); background: rgba(14,14,14,0.75); font: 500 30px/1 var(--body); color: var(--muted-light); white-space: nowrap; }
+      .chip img { width: 20px; height: 20px; }
+      #bubble { position: absolute; left: 1118px; top: 252px; width: 610px; border-radius: 30px 30px 30px 8px; background: #121212;
+        box-shadow: 0 0 0 1.5px var(--line), 0 40px 120px rgba(0,0,0,0.7); padding: 26px; box-sizing: border-box; }
+      #bubble .who { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+      #bubble .av { width: 48px; height: 48px; border-radius: 50%; background: #000; box-shadow: 0 0 0 1.5px var(--line); display: grid; place-items: center; }
+      #bubble .av img { width: 24px; height: 24px; }
+      #bubble .nm { font: 600 24px/1 var(--body); color: var(--white); }
+      #bubble .tm { font: 400 18px/1 var(--mono); color: var(--muted); margin-left: auto; }
+      #bubble .msg { font: 500 32px/1.3 var(--body); color: var(--white); margin: 0 4px 20px; }
+      #bubble .lk { border-radius: 18px; overflow: hidden; background: #0b0b0b; box-shadow: 0 0 0 1.5px var(--line); }
+      #bubble .th { height: 300px; background: url("assets/designs/foodee_t06.webp") 50% 40% / 128% auto no-repeat; }
+      #bubble .meta { padding: 18px 20px 20px; }
+      #bubble .tt { font: 600 26px/1.2 var(--body); color: var(--white); }
+      #bubble .live { margin-top: 10px; display: flex; align-items: center; gap: 12px; font: 500 22px/1 var(--mono); color: var(--glow-light); letter-spacing: 0.04em; }
+      #bubble .ld { width: 11px; height: 11px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 12px var(--glow); }
+      #bubble .cd { position: relative; display: inline-block; width: 130px; height: 22px; }
+      #bubble .cd span { position: absolute; left: 0; top: 0; opacity: 0; }
+
+      /* ---------- F: finale ---------- */
+      #sF { z-index: 8; background: #000; }
+      #fGlow { background: radial-gradient(80% 70% at 50% 122%, rgba(20,184,166,0.85), rgba(13,148,136,0.42) 38%, rgba(15,118,110,0.12) 66%, transparent 84%); opacity: 0; }
+      #fRing { position: absolute; left: 0; top: 0; width: 120px; height: 120px; margin: -60px 0 0 -60px; opacity: 0; }
+      #lockup { position: absolute; left: 0; right: 0; top: 360px; text-align: center; font: 700 176px/1 "Aller", sans-serif; letter-spacing: -0.01em; color: var(--white); white-space: nowrap; }
+      #lockup .base { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
+      #url { position: absolute; left: 0; right: 0; top: 622px; text-align: center; font: 400 44px/1 var(--mono); letter-spacing: 0.02em; color: var(--muted-light); }
+      #ctaRow { position: absolute; left: 0; right: 0; top: 722px; display: flex; justify-content: center; }
+      #cta { height: 88px; border-radius: 999px; background: var(--cream); display: flex; align-items: center; gap: 18px;
+        padding: 0 10px 0 34px; box-sizing: border-box; color: #000; font: 600 36px/1 var(--body); white-space: nowrap; }
+      #cta .arr { width: 66px; height: 66px; border-radius: 50%; background: #000; display: grid; place-items: center; }
+      .fdot { position: absolute; left: 0; top: 0; display: block; filter: drop-shadow(0 0 12px rgba(20, 184, 166, 0.85)); opacity: 0; }
+      #fade { background: #000; opacity: 0; z-index: 20; }
+
+      #grain { position: absolute; inset: -64px; background: url("assets/brand/grain.png"); opacity: 0.07; mix-blend-mode: overlay; z-index: 30; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="30">
+
+      <!-- A · the placeholder -->
+      <section id="sA" class="clip" data-start="0" data-duration="4.05" data-track-index="1">
+        <div id="cupWrap">
+          <img src="assets/designs/cup.webp" alt="" />
+          <div id="selFrame">
+            <div class="box"></div>
+            <div class="h" style="left:-9px;top:-9px"></div><div class="h" style="right:-9px;top:-9px"></div>
+            <div class="h" style="left:-9px;bottom:-9px"></div><div class="h" style="right:-9px;bottom:-9px"></div>
+            <div class="tag">PLACEHOLDER</div>
+          </div>
+        </div>
+        <div id="cupVeil" class="layer"></div>
+      </section>
+
+      <!-- B · the line -->
+      <section id="sB" class="clip" data-start="3.9" data-duration="4.15" data-track-index="2">
+        <div class="layer glow"></div>
+        <div id="lineB">
+          <div class="ln" id="b1"><div class="hl"></div><span class="tx">We take that</span></div>
+          <div class="ln" id="b2"><div class="hl"></div><span class="tx">literally.</span></div>
+        </div>
+        <div class="caret teal" id="caretB"><div class="stem"></div></div>
+        <div id="flood"></div>
+      </section>
+
+      <!-- C · names typed into real designs -->
+      <section id="sR" class="clip dz" data-start="7.98" data-duration="2.66" data-track-index="3">
+        <div class="layer tealbg" id="rTeal"></div>
+        <div class="layer" id="rIris">
+          <div class="layer" id="rBlack" style="background:#000"></div>
+          <div class="cam" id="camR"><div class="card" id="cardR"></div></div>
+        </div>
+      </section>
+      <section id="sK" class="clip" data-start="10.3" data-duration="3.05" data-track-index="4">
+        <div class="cam" id="camK"><div class="card" id="cardK"></div><div id="kExt"></div></div>
+      </section>
+      <section id="sZ" class="clip" data-start="13.0" data-duration="3.4" data-track-index="5">
+        <div class="cam" id="camZ"><div class="card" id="cardZ"></div></div>
+      </section>
+
+      <!-- D · the wall of real designs -->
+      <section id="sW" class="clip" data-start="15.72" data-duration="7.78" data-track-index="6">
+        <div id="wallPersp"><div id="wall"><div id="wallGrid" data-layout-allow-overflow></div></div></div>
+        <div id="wallScrim" class="layer"></div>
+        <div id="wallVeil" class="layer"></div>
+        <div id="lineW" data-layout-allow-overlap>
+          <div class="ln" id="w1"><span>Real designs.</span></div>
+          <div class="ln" id="w2"><span>Built in <span class="teal">your name.</span></span></div>
+        </div>
+      </section>
+
+      <!-- E · the offer -->
+      <section id="sO" class="clip" data-start="19.2" data-duration="4.3" data-track-index="7">
+        <div id="offerHead">
+          <div class="ln" id="o1"><span>Free 72-hour</span></div>
+          <div class="ln" id="o2"><span>live preview.</span></div>
+        </div>
+        <div id="chips">
+          <div class="chip" id="c1"><img src="assets/brand/diamond.png" alt="" />Sent on WhatsApp</div>
+          <div class="chip" id="c2"><img src="assets/brand/diamond.png" alt="" />No card needed</div>
+        </div>
+        <div id="bubble">
+          <div class="who"><div class="av"><img src="assets/brand/diamond.png" alt="" /></div><div class="nm">Fixbyte Studio</div><div class="tm">now</div></div>
+          <div class="msg">Your preview is live, Rosa.</div>
+          <div class="lk">
+            <div class="th"></div>
+            <div class="meta">
+              <div class="tt">Rosa's · live preview</div>
+              <div class="live"><div class="ld"></div>LIVE&nbsp;<span class="cd"><span>72:00:00</span><span>71:59:59</span><span>71:59:58</span><span>71:59:57</span><span>71:59:56</span></span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- F · the i comes home -->
+      <section id="sF" class="clip" data-start="23.47" data-duration="6.53" data-track-index="8">
+        <div id="fGlow" class="layer"></div>
+        <svg id="fRing" viewBox="-60 -60 120 120"><path d="M0 -50 C 14 -38, 38 -14, 50 0 C 38 14, 14 38, 0 50 C -14 38, -38 14, -50 0 C -38 -14, -14 -38, 0 -50 Z" fill="none" stroke="#5eead4" stroke-width="1.6"/></svg>
+        <div id="endGroup" class="layer" data-layout-allow-overflow>
+        <div id="lockup">F<span class="io" id="iotaA">ı</span>xbyte Stud<span class="io" id="iotaB">ı</span>o<span class="base" id="baseMark"></span></div>
+        <div id="url">studio.fixbyte.be</div>
+        <div id="ctaRow"><div id="cta">Try it free<div class="arr"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M8 22L22 8M11 8h11v11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+        <img class="fdot" id="dotA" src="assets/brand/diamond.png" alt="" />
+        <img class="fdot" id="dotB" src="assets/brand/diamond.png" alt="" />
+        <div class="caret teal" id="caretF"><div class="stem"></div></div>
+        </div>
+        <div id="fade" class="layer"></div>
+      </section>
+
+      <div id="grain"></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="30" data-track-index="0" data-volume="1"></audio>
+    </div>
+
+    <script>
+      // ---- capture metadata (CSS px in the 1920x1080 page, text colour) from tools/capture/composite_states.py
+      const META = {"foodee":{"color":"rgb(255, 255, 255)","states":[["orig",1548.5,332,332],["sel",1548.5,332,332],["t00",960,332,332],["t01",1061,332,332],["t02",1164.5,332,332],["t03",1262,332,332],["t04",1366,332,332],["t05",1394.5,332,332],["t06",1492,332,332]]},"cantara":{"color":"rgb(18, 24, 32)","states":[["orig",544.5,18.3,34],["sel",544.5,18.3,34],["t00",467.1,18.3,34],["t01",478.4,18.3,34],["t02",488.1,18.3,34],["t03",492.4,18.3,34],["t04",499.1,18.3,34],["t05",509.4,18.3,34],["t06",519.1,18.3,34],["t07",524.5,18.3,34],["t08",544,18.3,34],["t09",564.5,18.3,34],["t10",585,18.3,34],["t11",603.5,18.3,34]],"hi":[240,0,1040,84]},"azur":{"color":"rgb(255, 255, 255)","states":[["orig",1568.5,785.2,192],["sel",1568.5,785.2,192],["t00",290,785.2,192],["t01",403.8,785.2,192],["t02",509.6,785.2,192],["t03",621.5,785.2,192],["t04",742.3,785.2,192],["t05",766.1,785.2,192],["t06",872.9,785.2,192],["t07",986.8,785.2,192],["t08",1087.6,785.2,192],["t09",1182.4,785.2,192],["t10",1295.2,785.2,192],["t11",1407.0,785.2,192],["t12",1516.8,785.2,192]]}};
+      // card placement: translate(60, 33.75) scale(0.9375)
+      const CK = 0.9375, CX = 60, CY = 33.75;
+      const toScreen = (x, y) => [CX + x * CK, CY + y * CK];
+
+      function makeCaret(el, h, color) {
+        const w = Math.max(3, Math.round(h * 0.05));
+        const stem = el.querySelector(".stem");
+        stem.style.width = w + "px"; stem.style.height = Math.round(h * 0.80) + "px";
+        if (color) stem.style.background = color;
+        return { w, sh: Math.round(h * 0.80) };
+      }
+      function buildCard(cardEl, id) {
+        const { states, hi, color } = META[id];
+        states.forEach(([n]) => {
+          const img = document.createElement("img");
+          img.className = "st"; img.src = `assets/designs/${id}_${n}.webp`; img.alt = "";
+          cardEl.appendChild(img);
+          if (hi) {   // sharp 3x crop of the nav band for the macro shot
+            const h = document.createElement("img");
+            h.className = "hi"; h.src = `assets/designs/${id}_${n}.hi.webp`; h.alt = "";
+            Object.assign(h.style, { left: hi[0] + "px", top: hi[1] + "px", width: hi[2] - hi[0] + "px", height: hi[3] - hi[1] + "px" });
+            cardEl.appendChild(h);
+          }
+        });
+        const c = document.createElement("div");
+        c.className = "caret"; c.innerHTML = '<div class="stem"></div>';
+        cardEl.appendChild(c);
+        makeCaret(c, states[0][3], color);
+        return c;
+      }
+
+      // ---- wall
+      // "#..." cells are the three designs renamed in the montage
+      const WALL = ["loafly-fixbyte","bakeri-fixbyte","fixbyte-umami","otissons","pastora-fixbyte","minna-fixbyte","baron-fixbyte",
+        "ovena","savaro-fixbyte","#foodee_t06","therazorbrothers","cg-fixbyte","hairloom-fixbyte","bakeri-fixbyte",
+        "pastora-fixbyte","fixbyte-umami","#cantara_t11","#azur_t12","loafly-fixbyte","minna-fixbyte","savaro-fixbyte",
+        "ovena","otissons","cg-fixbyte","hairloom-fixbyte","bakeri-fixbyte","baron-fixbyte","therazorbrothers",
+        "fixbyte-umami","loafly-fixbyte","pastora-fixbyte","savaro-fixbyte","ovena","cg-fixbyte","minna-fixbyte"];
+      const grid = document.getElementById("wallGrid");
+      WALL.forEach((n) => {
+        const cell = document.createElement("div"); cell.className = "cell";
+        const img = document.createElement("img"); img.alt = "";
+        if (n[0] === "#") { cell.classList.add("mine"); img.src = `assets/designs/${n.slice(1)}.webp`; }
+        else img.src = `assets/wall/${n}.webp`;
+        cell.appendChild(img); grid.appendChild(cell);
+      });
+
+      const caretR = buildCard(document.getElementById("cardR"), "foodee");
+      const caretK = buildCard(document.getElementById("cardK"), "cantara");
+      const caretZ = buildCard(document.getElementById("cardZ"), "azur");
+
+      document.fonts.ready.then(() => {
+        // measure before any tween applies its from-state
+        const b2 = document.querySelector("#b2 .tx").getBoundingClientRect();
+        const tl = gsap.timeline({ paused: true });
+        const E = { o3: "power3.out", i3: "power3.in", io3: "power3.inOut", o4: "expo.out" };
+
+        // generic helpers ------------------------------------------------
+        const rise = (sel, t, stagger = 0.09, d = 0.62) =>
+          tl.fromTo(sel, { yPercent: 112 }, { yPercent: 0, duration: d, ease: E.o4, stagger }, t);
+        function blink(el, t0, t1, period = 0.5) {
+          for (let t = t0; t < t1 - 0.01; t += period) {
+            tl.set(el, { opacity: 1 }, t);
+            tl.set(el, { opacity: 0 }, t + period * 0.55);
+          }
+          tl.set(el, { opacity: 1 }, t1);
+        }
+        function placeCaret(caretEl, st, t) {
+          const [, x, y, h] = st;
+          tl.set(caretEl, { x: x + Math.max(3, h * 0.03), y: y + h * 0.9 }, t);
+        }
+        // typing programme for one design card
+        function typeDesign(id, cardEl, caretEl, P) {
+          const imgs = [...cardEl.querySelectorAll("img.st")], his = [...cardEl.querySelectorAll("img.hi")];
+          const states = META[id].states;
+          const show = (i, t) => {
+            imgs.forEach((im, k) => tl.set(im, { opacity: k === i ? 1 : 0 }, t));
+            his.forEach((im, k) => tl.set(im, { opacity: k === i ? 1 : 0 }, t));
+            placeCaret(caretEl, states[i], t);
+          };
+          show(0, P.start);                       // original name, caret parked at its end
+          tl.set(caretEl, { opacity: 0 }, P.start);
+          blink(caretEl, P.caretIn, P.sel);
+          show(1, P.sel);                         // select-all (teal selection)
+          show(2, P.del);                         // deleted
+          for (let k = 3; k < states.length; k++) show(k, P.first + (k - 3) * P.step);
+          const done = P.first + (states.length - 4) * P.step;
+          blink(caretEl, done + 0.35, P.end);
+          return done;
+        }
+
+        // ============ A · 0.00–4.05  the cup ============
+        const cup = document.getElementById("cupWrap");
+        gsap.set(cup, { transformOrigin: "1132px 812px", scale: 0.6 });
+        tl.fromTo("#cupVeil", { opacity: 1 }, { opacity: 0, duration: 0.9, ease: "power2.out" }, 0.05);
+        tl.fromTo(cup, { scale: 0.6, filter: "blur(10px)" }, { scale: 0.98, filter: "blur(0px)", duration: 3.5, ease: "power1.inOut" }, 0.1);
+        tl.fromTo("#selFrame", { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.35, ease: E.o3 }, 1.6);
+        tl.fromTo("#selFrame .tag", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: E.o3 }, 1.75);
+        // exit: crash zoom into the lettering, then black
+        tl.to(cup, { scale: 2.6, filter: "blur(14px)", duration: 0.38, ease: E.i3 }, 3.62);
+        tl.to("#cupVeil", { opacity: 1, duration: 0.16, ease: "none" }, 3.86);
+
+        // ============ B · 3.90–8.05  "We take that literally." ============
+        tl.fromTo("#sB .glow", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power2.out" }, 4.0);
+        rise(["#b1 .tx", "#b2 .tx"], 4.0, 0.14, 0.75);
+        // caret after "literally."
+        const caretB = document.getElementById("caretB");
+        const hB = 150 * 0.86;
+        const capB = makeCaret(caretB, hB / 0.8);
+        tl.set(caretB, { x: b2.right + 14, y: b2.top + 150 * 0.9, opacity: 0 }, 3.9);
+        blink(caretB, 4.75, 7.42);
+        // select-all: highlight grows across both lines, text flips to ink
+        gsap.set("#lineB .hl", { scaleX: 0 });
+        tl.to("#b1 .hl", { scaleX: 1, duration: 0.16, ease: "power2.out" }, 7.42);
+        tl.to("#b2 .hl", { scaleX: 1, duration: 0.14, ease: "power2.out" }, 7.50);
+        tl.to("#b1 .tx", { color: "#000", duration: 0.08 }, 7.45);
+        tl.to("#b2 .tx", { color: "#000", duration: 0.08 }, 7.53);
+        // the selection floods the frame as a diamond grown from the caret
+        // the selection floods the frame as a teal diamond opening from the cursor
+        const fx = b2.right + 14 + capB.w / 2, fy = b2.top + 150 * 0.9 - capB.sh / 2, fs = 26;
+        tl.set(caretB, { opacity: 0 }, 7.6);
+        gsap.set("#flood", { rotation: 45, scale: 0, transformOrigin: "50% 50%" });
+        gsap.set("#flood", { width: fs, height: fs, x: fx - fs / 2, y: fy - fs / 2 });
+        tl.fromTo("#flood", { scale: 0 }, { scale: 1, duration: 0.02 }, 7.6);
+        tl.to("#flood", { scale: 180, duration: 0.4, ease: "power3.in" }, 7.6);
+
+        // ============ C · names, typed into the real designs ============
+        // -- ROSA'S  (Foodee): the giant spotted wordmark, centred, retyped
+        const fo = META.foodee.states[0];
+        const [rx, ry] = toScreen(fo[1], fo[2] + fo[3] / 2);
+        const [rcx, rcy] = toScreen(960, fo[2] + fo[3] * 0.55);
+        const R = (r) => `polygon(${rx}px ${ry - r}px, ${rx + r}px ${ry}px, ${rx}px ${ry + r}px, ${rx - r}px ${ry}px)`;
+        tl.fromTo("#rIris", { clipPath: R(0) }, { clipPath: R(2600), duration: 0.62, ease: "power3.in" }, 7.99);
+        tl.set("#rTeal", { opacity: 0 }, 8.62);
+        gsap.set("#camR", { transformOrigin: `${rcx}px ${rcy}px` });
+        tl.fromTo("#camR", { scale: 1.0 }, { scale: 1.05, duration: 0.7, ease: "none" }, 7.98);
+        tl.to("#camR", { scale: 1.3, duration: 1.55, ease: "power2.inOut" }, 8.68);
+        typeDesign("foodee", document.getElementById("cardR"), caretR, { start: 7.98, caretIn: 8.0, sel: 8.45, del: 8.75, first: 8.95, step: 0.09, end: 10.2 });
+        // whip to Cantara
+        tl.to("#camR", { x: -2300, filter: "blur(18px)", duration: 0.3, ease: E.i3 }, 10.25);
+        tl.to("#rBlack", { opacity: 0, duration: 0.1 }, 10.3);
+
+        // -- MAISON NOOR  (Cantara): macro on the nav logo, then pull back to the whole design on the 12.0 hit
+        const ca = META.cantara.states;
+        const [lx, ly] = toScreen(467, ca[0][2] + ca[0][3] / 2);
+        const MS = 3.1, mx = 960 - lx, my = 540 - ly;
+        gsap.set("#camK", { transformOrigin: `${lx}px ${ly}px` });
+        tl.fromTo("#camK", { x: mx + 2300, y: my, scale: MS, filter: "blur(16px)" }, { x: mx, filter: "blur(0px)", duration: 0.45, ease: E.o3 }, 10.38);
+        tl.to("#camK", { scale: MS * 1.06, duration: 1.2, ease: "none" }, 10.8);
+        typeDesign("cantara", document.getElementById("cardK"), caretK, { start: 10.3, caretIn: 10.55, sel: 10.85, del: 11.05, first: 11.15, step: 0.05, end: 12.9 });
+        tl.to("#camK", { x: 0, y: 0, scale: 1.0, duration: 0.85, ease: E.o4 }, 12.0);
+        tl.to("#kExt", { opacity: 0, duration: 0.1, ease: "none" }, 12.0);
+        tl.to("#camK", { x: -2300, filter: "blur(18px)", duration: 0.3, ease: E.i3 }, 12.95);
+
+        // -- AZUR VOYAGES  (Dar Al Khalily Travel)
+        const [zx, zy] = toScreen(905, 785.2 + 110);
+        gsap.set("#camZ", { transformOrigin: `${zx}px ${zy}px` });
+        tl.fromTo("#camZ", { x: 2300, filter: "blur(16px)" }, { x: 0, filter: "blur(0px)", duration: 0.45, ease: E.o3 }, 13.08);
+        tl.fromTo("#camZ", { scale: 1.0, y: 0 }, { scale: 1.16, y: -96, duration: 2.6, ease: "power1.inOut" }, 13.08);
+        typeDesign("azur", document.getElementById("cardZ"), caretZ, { start: 13.0, caretIn: 13.3, sel: 13.55, del: 13.80, first: 13.92, step: 0.065, end: 15.7 });
+        // dolly out into the wall
+        gsap.set("#camZ", { transformOrigin: "960px 540px" });
+        tl.to("#camZ", { scale: 0.22, opacity: 0, duration: 0.62, ease: "power2.in" }, 15.72);
+
+        // ============ D · the wall 15.72–23.5 ============
+        gsap.set("#wall", { rotationX: 30, rotationZ: -11, scale: 2.3, x: 0, y: 0 });
+        tl.fromTo("#wallPersp", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 15.72);
+        tl.to("#wall", { scale: 1.0, duration: 1.1, ease: E.o3 }, 15.78);
+        tl.fromTo("#wall", { x: 160, y: 120 }, { x: -520, y: -330, duration: 7.7, ease: "power2.in" }, 15.78);
+        tl.fromTo("#wall", { rotationZ: -11 }, { rotationZ: -6, duration: 7.7, ease: "sine.inOut" }, 15.78);
+        tl.fromTo("#wallScrim", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 16.2);
+        rise(["#w1 > span", "#w2 > span"], 16.45, 0.42, 0.7);
+        tl.to("#lineW", { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, 19.12);
+        tl.to("#wallPersp", { filter: "blur(14px)", duration: 0.5, ease: "power2.out" }, 19.15);
+        tl.to("#wallVeil", { opacity: 0.55, duration: 0.5 }, 19.15);
+
+        // ============ E · the offer 19.2–23.5 ============
+        rise(["#o1 > span", "#o2 > span"], 19.45, 0.12, 0.72);
+        tl.fromTo("#bubble", { y: 90, opacity: 0, scale: 0.94, transformOrigin: "0% 100%" }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.4)" }, 19.82);
+        tl.fromTo("#c1", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: E.o3 }, 20.5);
+        tl.fromTo("#c2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: E.o3 }, 20.9);
+        const cds = [...document.querySelectorAll("#bubble .cd span")];
+        cds.forEach((s, i) => { tl.set(cds, { opacity: 0 }, 19.82 + i); tl.set(s, { opacity: 1 }, 19.82 + i); });
+        tl.fromTo("#bubble .ld", { opacity: 1 }, { opacity: 0.25, duration: 0.5, yoyo: true, repeat: 6, ease: "sine.inOut" }, 20.0);
+
+        // ============ F · the i comes home 23.47–30 ============
+        // geometry of the two dotless i's inside the lockup
+        const base = document.getElementById("baseMark").getBoundingClientRect().top;
+        const ctx = document.createElement("canvas").getContext("2d");
+        ctx.font = '700 176px "Aller"';
+        const xh = ctx.measureText("x").actualBoundingBoxAscent;
+        const capH = ctx.measureText("H").actualBoundingBoxAscent;
+        // find the real stem of "ı": draw it offscreen and scan the ink at mid x-height
+        // (Aller's ink box includes a curved foot, so its centre is not the stem's centre)
+        const gc = document.createElement("canvas"); gc.width = 200; gc.height = 220;
+        const g = gc.getContext("2d"); g.font = ctx.font; g.fillStyle = "#000"; g.fillText("ı", 40, 200);
+        const row = g.getImageData(0, Math.round(200 - xh * 0.5), 200, 1).data;
+        let i0 = -1, i1 = -1;
+        for (let x = 0; x < 200; x++) if (row[x * 4 + 3] > 127) { if (i0 < 0) i0 = x; i1 = x; }
+        const stemW = i1 - i0 + 1, stemOff = (i0 + i1 + 1) / 2 - 40;   // stem centre relative to the glyph origin
+        const stemCx = (el) => el.getBoundingClientRect().left + stemOff;
+        const cxA = stemCx(document.getElementById("iotaA")), cxB = stemCx(document.getElementById("iotaB"));
+        const dF = Math.round(xh * 0.52), dotY = base - xh - dF * 0.42 - dF; // dot sits above the x-height
+        ["#dotA", "#dotB"].forEach((sel, k) => {
+          const el = document.querySelector(sel);
+          el.style.width = dF + "px"; el.style.height = dF + "px";
+          gsap.set(el, { x: (k ? cxB : cxA) - dF / 2, y: dotY, transformOrigin: "50% 50%" });
+        });
+        const caretF = document.getElementById("caretF"), stemF = caretF.querySelector(".stem");
+        stemF.style.width = stemW + "px"; stemF.style.height = capH * 1.08 + "px"; stemF.style.left = -stemW / 2 + "px";
+        gsap.set(caretF, { x: cxB, y: base });
+        // hold: the cursor alone in the gap, where Studio's i will be
+        tl.set("#lockup, #url, #cta", { opacity: 0 }, 23.47);
+        tl.fromTo(caretF, { opacity: 0 }, { opacity: 1, duration: 0.06 }, 23.5);
+        tl.fromTo(caretF, { scale: 1, transformOrigin: "0px 0px" }, { scale: 0.9, duration: 0.45, ease: "power2.in" }, 23.53);
+        // DROP 24.00 — the line unfolds from the cursor, the cursor becomes the i, both i's get the diamond
+        const lk = document.getElementById("lockup").getBoundingClientRect();
+        const pL = ((cxB - lk.left) / lk.width) * 100, pR = 100 - pL;
+        tl.set("#lockup", { opacity: 1 }, 24.0);
+        tl.fromTo("#lockup", { clipPath: `inset(-20% ${pR}% -20% ${pL}%)` }, { clipPath: "inset(-20% 0% -20% 0%)", duration: 0.7, ease: E.o4 }, 24.0);
+        tl.to(caretF, { scale: 1, duration: 0.25, ease: E.o3 }, 24.0);
+        tl.to(stemF, { height: xh, duration: 0.06, ease: E.o3 }, 24.0);
+        tl.to(stemF, { opacity: 0, duration: 0.05, ease: "none" }, 24.0);
+        tl.fromTo("#dotB", { opacity: 0, scale: 0.2, yPercent: -90 }, { opacity: 1, scale: 1, yPercent: 0, duration: 0.42, ease: "back.out(2.4)" }, 24.0);
+        tl.fromTo("#dotA", { opacity: 0, scale: 0.2, yPercent: -90 }, { opacity: 1, scale: 1, yPercent: 0, duration: 0.42, ease: "back.out(2.4)" }, 24.12);
+        tl.set("#fRing", { x: cxB, y: dotY + dF / 2 }, 24.0);
+        tl.fromTo("#fRing", { scale: 0.3, opacity: 0.95 }, { scale: 17, opacity: 0, duration: 1.3, ease: "expo.out" }, 24.0);
+        tl.fromTo("#fGlow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 24.0);
+        tl.to("#fGlow", { opacity: 0.78, duration: 2.5, ease: "sine.inOut" }, 24.6);
+        tl.fromTo("#url", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.6, ease: E.o3 }, 24.95);
+        tl.fromTo("#cta", { opacity: 0, y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: E.o3 }, 25.35);
+        // gentle breathe on the dot while the card holds
+        tl.to("#dotA, #dotB", { scale: 1.08, duration: 0.5, yoyo: true, repeat: 7, ease: "sine.inOut" }, 25.5);
+        // the whole card (text, diamonds, cursor) settles from 1.07 on the drop, then drifts in slowly
+        gsap.set("#endGroup", { transformOrigin: "50% 52%" });
+        tl.fromTo("#endGroup", { scale: 1.07 }, { scale: 1, duration: 1.2, ease: E.o3 }, 24.0);
+        tl.to("#endGroup", { scale: 1.035, duration: 4.6, ease: "sine.inOut" }, 25.2);
+        tl.to("#fade", { opacity: 1, duration: 0.6, ease: "power1.in" }, 29.4);
+
+        // film grain, stepped so every frame is reproducible
+        tl.fromTo("#grain", { x: 0, y: 0 }, { x: 60, y: -44, duration: 30, ease: "steps(300)" }, 0);
+
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
