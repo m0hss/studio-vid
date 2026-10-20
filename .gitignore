@@ -7,11 +7,17 @@ node_modules/
 .tools/
 
 # Render outputs and logs (regenerable with `hyperframes render`)
-out/
+# The final delivery video is kept; other renders are not.
+out/*
+!out/fixbyte-studio-promo.mp4
 project/renders/
 *.log
 *.mp4
 *.mov
+!out/fixbyte-studio-promo.mp4
+
+# Screen recordings (large, not needed to build the video)
+assets/screencasts/
 
 # HyperFrames local state and locks
 .hyperframes/
