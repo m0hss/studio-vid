@@ -10,12 +10,14 @@ node_modules/
 # The final delivery video and the intro pitches are kept; other renders are not.
 out/*
 !out/fixbyte-studio-promo.mp4
+!out/fixbyte-studio-promo-reel.mp4
 !out/intros/
 project/renders/
 *.log
 *.mp4
 *.mov
 !out/fixbyte-studio-promo.mp4
+!out/fixbyte-studio-promo-reel.mp4
 !out/intros/*.mp4
 
 # Screen recordings (large, not needed to build the video)

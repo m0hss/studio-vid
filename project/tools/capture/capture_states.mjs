@@ -1,13 +1,15 @@
 // Capture a live Fixbyte design demo once per keystroke while its business name is retyped in the real DOM.
-// usage: node tools/capture/capture_states.mjs <outDir> [jobId]
+// usage: node tools/capture/capture_states.mjs <outDir> [jobId] [--phone]
 // Writes <id>_orig|sel|tNN.webp (raw viewport screenshots) + meta_<id>.json (caret geometry + text colour, CSS px).
+// --phone captures the mobile layout at 402x874 @3x (the reel); CHROME=<path> overrides the browser.
 import puppeteer from "../../node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.js";
 import fs from "fs";
 import os from "os";
 
-const exe = `${os.homedir()}/.cache/puppeteer/chrome-headless-shell/linux-145.0.7632.77/chrome-headless-shell-linux64/chrome-headless-shell`;
-const out = process.argv[2];
-const only = process.argv[3];
+const exe = process.env.CHROME || `${os.homedir()}/.cache/puppeteer/chrome-headless-shell/linux-145.0.7632.77/chrome-headless-shell-linux64/chrome-headless-shell`;
+const args = process.argv.slice(2);
+const PHONE = args.includes("--phone");
+const [out, only] = args.filter((a) => a !== "--phone");
 
 const JOBS = [
   {
@@ -16,6 +18,7 @@ const JOBS = [
     find: `[...document.querySelectorAll('p')].find(e => /Moonrocks/.test(getComputedStyle(e).fontFamily) && e.textContent.trim() === 'Foodee')`,
     collapse: true,
     final: [["FOODEE", "ROSA'S"]],
+    phone: { dpr: 3 },
   },
   {
     id: "cantara", url: "https://cantara-fixbyte.framer.website/", dpr: 3, name: "MAISON NOOR", sel: ["rgb(18, 24, 32)", "#f5f2ec"],
@@ -25,19 +28,30 @@ const JOBS = [
       const deep = m.filter(e => ![...e.children].some(c => /Use This Template/i.test(c.textContent)));
       deep.forEach(e => { let x = e; while (x.parentElement && x.parentElement.getBoundingClientRect().width < 320) x = x.parentElement; x.style.visibility = 'hidden'; });`,
     final: [],
+    // the mobile nav logo (the live demo now reads VANTARA)
+    phone: { dpr: 3, find: `document.querySelector('nav h3, header h3') || [...document.querySelectorAll('h3')].find(e => e.getBoundingClientRect().top < 80)` },
   },
   {
     id: "azur", url: "https://alktravel.fixbyte.dev/", dpr: 1.5, name: "AZUR VOYAGES", sel: ["#ffffff", "#053a5c"],
     find: `[...document.querySelectorAll('p')].find(e => e.textContent.includes('DAR AL KHALILY'))`,
     suffix: "®", // the mark stays after the name; only the name is selected and retyped
     final: [["Dar Al Khalily Travel", "Azur Voyages"]],
+    // on mobile the name on the first screen is the header logo
+    phone: { dpr: 3, name: "Azur Voyages", suffix: "",
+      find: `[...document.querySelectorAll('span')].find(e => e.textContent.trim() === 'Dar Al Khalily Travel' && e.getBoundingClientRect().top < 80)`,
+      final: [["Dar Al Khalily Travel", "Azur Voyages"], ["DAR AL KHALILY", "AZUR VOYAGES"]] },
   },
 ];
+
+if (PHONE) JOBS.forEach((j) => Object.assign(j, j.phone));
 
 const b = await puppeteer.launch({ executablePath: exe, args: ["--no-sandbox", "--hide-scrollbars"] });
 await Promise.all(JOBS.filter((j) => !only || j.id === only).map(async (j) => {
   const p = await b.newPage();
-  await p.setViewport({ width: 1920, height: 1080, deviceScaleFactor: j.dpr });
+  if (PHONE) {
+    await p.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1");
+    await p.setViewport({ width: 402, height: 874, deviceScaleFactor: j.dpr, isMobile: true, hasTouch: true });
+  } else await p.setViewport({ width: 1920, height: 1080, deviceScaleFactor: j.dpr });
   try { await p.goto(j.url, { waitUntil: "networkidle2", timeout: 60000 }); } catch { console.log("nav timeout", j.id); }
   await new Promise((r) => setTimeout(r, 6500));
   // selection is drawn in the cursor's colour (the text colour), with the page colour as its ink
