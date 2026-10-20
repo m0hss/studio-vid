@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Intro 4 — The Street After Dark</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="_shared/intro.css" />
+    <style>
+      :root { --ln: #2c6b63; --ln2: #1a3f3a; --fill: #040908; }
+      #s4 { background: linear-gradient(180deg, #020505 0%, #061110 70%, #020404 100%); }
+      #cam { position: absolute; inset: 0; }
+      #street { position: absolute; left: 0; top: 0; width: 3600px; height: 1080px; }
+      #ground { position: absolute; left: 0; right: 0; top: 860px; height: 2px; background: var(--ln); }
+      #kerb { position: absolute; left: 0; right: 0; top: 900px; height: 1.5px; background: var(--ln2); }
+      .bld { position: absolute; bottom: 220px; width: 600px; border: 2px solid var(--ln2); border-bottom: 0; background: #030707; box-sizing: border-box; }
+      .bld .up { position: absolute; width: 70px; height: 96px; border: 1.5px solid var(--ln2); box-sizing: border-box; }
+      .bld .up.on { background: rgba(20,184,166,0.08); }
+      .shop { position: absolute; bottom: 220px; width: 560px; height: 500px; border: 2.5px solid var(--ln); border-bottom: 0; background: var(--fill); box-sizing: border-box; }
+      .sign { position: absolute; left: 46px; right: 46px; top: 30px; height: 96px; border: 2px dashed rgba(94,234,212,0.32); display: flex; align-items: center; justify-content: center;
+        font: 500 26px/1 var(--mono); letter-spacing: 0.14em; color: rgba(94,234,212,0.36); white-space: nowrap; }
+      .awn { position: absolute; left: 22px; right: 22px; top: 150px; height: 46px;
+        background: repeating-linear-gradient(90deg, rgba(44,107,99,0.55) 0 32px, transparent 32px 64px); border: 2px solid var(--ln); box-sizing: border-box; }
+      .win { position: absolute; left: 40px; top: 226px; width: 310px; height: 230px; border: 2px solid var(--ln); background: #061210; overflow: hidden; }
+      .door { position: absolute; right: 40px; top: 226px; width: 140px; bottom: 0; border: 2px solid var(--ln); border-bottom: 0; }
+      .door::after { content: ""; position: absolute; left: 18px; top: 140px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ln); }
+      .win svg { position: absolute; left: 0; top: 0; }
+      .lamp { position: absolute; bottom: 220px; width: 3px; height: 470px; background: var(--ln); }
+      .lamp::before { content: ""; position: absolute; left: -16px; top: -8px; width: 35px; height: 14px; border: 2px solid var(--ln); border-radius: 10px 10px 2px 2px; }
+      .cone { position: absolute; width: 520px; height: 560px; bottom: 166px; margin-left: -258px;
+        background: radial-gradient(50% 100% at 50% 0%, rgba(94,234,212,0.11), transparent 70%); clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%); }
+      .pole { position: absolute; right: 196px; top: 240px; width: 22px; height: 150px; border: 2px solid var(--ln); border-radius: 11px;
+        background: repeating-linear-gradient(-35deg, rgba(94,234,212,0.35) 0 8px, transparent 8px 22px); }
+      /* Rosa's */
+      #rSign .sel .tx { color: rgba(94,234,212,0.36); }
+      #rName { font: 700 64px/1 var(--display); letter-spacing: 0.02em; color: var(--white); text-shadow: 0 0 22px rgba(20,184,166,0.6); }
+      #rName .icaret { height: 0.78em; }
+      #rLight { position: absolute; inset: 0; background: radial-gradient(80% 90% at 50% 35%, #5eead4, #14b8a6 60%, #0d9488); opacity: 0; }
+      #rSpill { position: absolute; left: 2240px; top: 862px; width: 560px; height: 190px; margin-left: -60px; opacity: 0;
+        background: radial-gradient(50% 60% at 40% 0%, rgba(20,184,166,0.45), transparent 75%); }
+      #fill { background: var(--glow); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="10">
+      <section id="s4" class="clip" data-start="0" data-duration="8.1" data-track-index="1">
+        <div id="cam">
+          <div id="street" data-layout-allow-overflow>
+            <div id="ground"></div><div id="kerb"></div>
+            <div id="rSpill"></div>
+          </div>
+        </div>
+        <div id="fill" class="layer"></div>
+      </section>
+      <section id="tail" class="clip" data-start="7.98" data-duration="2.02" data-track-index="2"></section>
+      <div id="grain"></div>
+      <audio id="sfx" src="sfx.wav" data-start="0" data-duration="10" data-track-index="0" data-volume="1"></audio>
+    </div>
+    <script src="_shared/intro.js"></script>
+    <script>
+      // window interiors, line art (310 x 230)
+      const L = 'fill="none" stroke="#2c6b63" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
+      const INSIDE = {
+        barber: `<path d="M60 200 v-60 h70 v60 M50 140 h90 M95 140 v-50 h40" ${L}/><circle cx="230" cy="80" r="34" ${L}/><path d="M0 200 h310" ${L}/>`,
+        bakery: `<path d="M20 110 h270 M20 190 h270" ${L}/><ellipse cx="70" cy="92" rx="36" ry="16" ${L}/><ellipse cx="160" cy="92" rx="36" ry="16" ${L}/><ellipse cx="245" cy="92" rx="30" ry="14" ${L}/><path d="M50 172 q25 -30 50 0 M130 172 q25 -30 50 0 M210 172 q25 -30 50 0" ${L}/>`,
+        cafe: `<path d="M0 170 h310" ${L}/><path d="M70 120 h44 v40 h-44 z M114 130 q16 0 16 12 q0 12 -16 12" ${L}/><path d="M180 120 h44 v40 h-44 z M224 130 q16 0 16 12 q0 12 -16 12" ${L}/><path d="M85 108 q6 -10 0 -20 M195 108 q6 -10 0 -20" ${L}/>`,
+        rosa: `<path d="M155 0 v52 M130 52 h50 l-8 22 h-34 z" ${L}/><path d="M80 160 h150 M100 160 v60 M210 160 v60" ${L}/><ellipse cx="125" cy="152" rx="22" ry="6" ${L}/><ellipse cx="185" cy="152" rx="22" ry="6" ${L}/><path d="M40 220 v-70 h25 M270 220 v-70 h-25" ${L}/>`,
+        florist: `<path d="M50 200 l10 -50 h50 l10 50 z M190 200 l10 -50 h50 l10 50 z" ${L}/><path d="M85 150 q-30 -50 -10 -90 M85 150 q20 -60 50 -80 M225 150 q-10 -60 -40 -90 M225 150 q15 -50 45 -70" ${L}/>`,
+      };
+      const SHOPS = ["barber", "bakery", "cafe", "rosa", "florist"];
+      const street = document.getElementById("street");
+      const el = (cls, css, html = "") => { const d = document.createElement("div"); d.className = cls; Object.assign(d.style, css); d.innerHTML = html; street.appendChild(d); return d; };
+      SHOPS.forEach((kind, i) => {
+        const x = 200 + i * 680;
+        // the building above the shop, upper-floor windows
+        const b = el("bld", { left: x - 20 + "px", height: 760 - (i % 2) * 90 + "px" });
+        for (let r = 0; r < 2 - (i % 2); r++) for (let c = 0; c < 4; c++) {
+          const w = document.createElement("div"); w.className = "up" + ((i * 3 + r * 2 + c) % 5 === 0 ? " on" : "");
+          Object.assign(w.style, { left: 70 + c * 125 + "px", top: 40 + r * 130 + "px" }); b.appendChild(w);
+        }
+        const s = el("shop", { left: x + "px" });
+        s.id = kind === "rosa" ? "rShop" : "";
+        s.innerHTML = `<div class="sign" ${kind === "rosa" ? 'id="rSign"' : ""}>${kind === "rosa"
+            ? '<span class="sel" id="rPh"><span class="hl"></span><span class="tx">YOUR NAME HERE</span></span><span class="icaret" id="rC0"></span><span id="rName"></span>'
+            : "YOUR NAME HERE"}</div>
+          <div class="awn"></div>
+          <div class="win" ${kind === "rosa" ? 'id="rWin"' : ""}>${kind === "rosa" ? '<div id="rLight"></div>' : ""}<svg width="310" height="230" viewBox="0 0 310 230">${INSIDE[kind]}</svg></div>
+          <div class="door"></div>${kind === "barber" ? '<div class="pole"></div>' : ""}`;
+        if (i < SHOPS.length) { el("cone", { left: x - 60 + "px" }); el("lamp", { left: x - 60 + "px" }); }
+      });
+      el("cone", { left: 200 + 5 * 680 - 60 + "px" }); el("lamp", { left: 200 + 5 * 680 - 60 + "px" });
+      // the light spill sits in front of the lamps
+      street.appendChild(document.getElementById("rSpill"));
+
+      document.fonts.ready.then(() => {
+        const tl = gsap.timeline({ paused: true });
+        const { E } = IK;
+        const PAN = 960 - (200 + 3 * 680 + 280);   // Rosa's shop centred
+        // 0–4.5  a slow walk past blank signs
+        tl.fromTo("#street", { x: 40 }, { x: PAN, duration: 4.5, ease: "power2.inOut" }, 0);
+        tl.fromTo("#cam", { scale: 1.08, y: 20 }, { scale: 1, y: 0, duration: 4.5, ease: "sine.inOut", transformOrigin: "50% 60%" }, 0);
+
+        // 4.4  a cursor in Rosa's sign: select the placeholder, delete, type the name
+        const c0 = document.getElementById("rC0");
+        tl.set(c0, { opacity: 0 }, 0);
+        IK.blink(tl, c0, 4.35, 4.85, 0.25);
+        IK.select(tl, document.getElementById("rPh"), 4.85, 0.14);
+        tl.set(["#rPh", c0], { display: "none" }, 5.1);
+        tl.set("#rSign", { borderStyle: "solid", borderColor: "rgba(94,234,212,0.8)", boxShadow: "0 0 26px rgba(20,184,166,0.45), inset 0 0 18px rgba(20,184,166,0.25)" }, 5.1);
+        const nm = IK.chars(document.getElementById("rName"), "ROSA'S");
+        const last = IK.type(tl, nm.cs, 5.25, 0.1);
+        IK.blink(tl, nm.caret, last + 0.2, 6.6, 0.4);
+        tl.set(nm.caret, { opacity: 0 }, 6.6);
+
+        // 5.95  the lights come on inside
+        tl.to("#rLight", { opacity: 0.85, duration: 0.12, ease: "steps(3)" }, 5.95);
+        tl.to("#rSpill", { opacity: 1, duration: 0.3 }, 5.95);
+
+        // 6.45–7.95  push in through the lit window until it is the frame
+        tl.seek(5);
+        const w = document.getElementById("rWin").getBoundingClientRect();
+        tl.seek(0);
+        tl.set("#cam", { transformOrigin: `${w.left + w.width / 2}px ${w.top + w.height / 2}px` }, 6.44);
+        tl.to("#cam", { scale: 9, duration: 1.5, ease: "power3.in" }, 6.45);
+        tl.to("#rLight", { opacity: 1, duration: 0.6 }, 7.1);
+        tl.to("#fill", { opacity: 1, duration: 0.3, ease: "power2.in" }, 7.65);
+
+        IK.tail(tl);
+        IK.done(tl);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
