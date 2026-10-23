@@ -11,6 +11,7 @@ node_modules/
 out/*
 !out/fixbyte-studio-promo.mp4
 !out/fixbyte-studio-promo-reel.mp4
+!out/fixbyte-studio-promo-voiceover.mp4
 !out/intros/
 project/renders/
 *.log
@@ -18,6 +19,7 @@ project/renders/
 *.mov
 !out/fixbyte-studio-promo.mp4
 !out/fixbyte-studio-promo-reel.mp4
+!out/fixbyte-studio-promo-voiceover.mp4
 !out/intros/*.mp4
 
 # Screen recordings (large, not needed to build the video)
