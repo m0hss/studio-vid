@@ -12,6 +12,7 @@ out/*
 !out/fixbyte-studio-promo.mp4
 !out/fixbyte-studio-promo-reel.mp4
 !out/fixbyte-studio-promo-voiceover.mp4
+!out/fixbyte-studio-promo-fr.mp4
 !out/intros/
 project/renders/
 *.log
@@ -20,6 +21,7 @@ project/renders/
 !out/fixbyte-studio-promo.mp4
 !out/fixbyte-studio-promo-reel.mp4
 !out/fixbyte-studio-promo-voiceover.mp4
+!out/fixbyte-studio-promo-fr.mp4
 !out/intros/*.mp4
 
 # Screen recordings (large, not needed to build the video)
@@ -30,6 +32,7 @@ assets/screencasts/
 
 # Build intermediates (regenerate with tools/build_audio.py)
 project/assets/audio/mix_raw.wav
+project/assets/audio/mix_fr_raw.wav
 
 # Secrets and local environment
 .env

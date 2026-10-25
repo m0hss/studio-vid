@@ -39,3 +39,8 @@ Typing ticks and select blips on each keystroke (from `rosas.com` on); an enter 
 a reload click; whooshes on the pushes; a soft
 message chime; a reverse swell into the drop and a sub hit under it. All synthesized
 (tools/build_audio.py), mixed under the music.
+
+## French version (`fr/`)
+Same timeline, music and designs, with French copy. The owner is **Luc's** (`lucs.com`), and Foodee is retyped as **LUC'S**.
+Copy: « Luc's est là depuis des années. / En ligne, il n'existe pas. » · « De vrais designs. Créés à votre nom. » ·
+« Aperçu gratuit 72 h en ligne. » · Envoyé sur WhatsApp · Sans carte bancaire · **Essai gratuit**.
