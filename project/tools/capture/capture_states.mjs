@@ -21,6 +21,14 @@ const JOBS = [
     phone: { dpr: 3 },
   },
   {
+    // French version (fr/): the same wordmark, retyped as Luc's
+    id: "foodee_fr", url: "https://foodee-fixbyte.framer.website/", dpr: 1.5, name: "Luc's", sel: ["#ffffff", "#8f0000"],
+    find: `[...document.querySelectorAll('p')].find(e => /Moonrocks/.test(getComputedStyle(e).fontFamily) && e.textContent.trim() === 'Foodee')`,
+    collapse: true,
+    final: [["FOODEE", "LUC'S"]],
+    phone: { dpr: 3 },
+  },
+  {
     id: "cantara", url: "https://cantara-fixbyte.framer.website/", dpr: 3, name: "MAISON NOOR", sel: ["rgb(18, 24, 32)", "#f5f2ec"],
     find: `[...document.querySelectorAll('h3')].find(e => e.textContent.trim() === 'CANTARA')`,
     // hide only the template's "Use This Template" button: deepest match, climbed while still button-sized

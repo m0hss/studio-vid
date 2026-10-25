@@ -3,6 +3,7 @@
 - `index.html` — the whole film on one GSAP timeline (scenes A–F, see `STORYBOARD.md`)
 - `assets/designs/` — live Fixbyte design demos captured at 1.5×, one frame per keystroke (`<id>_orig|sel|tNN.webp`)
 - `reel/index.html` — the same film as a 1080×1920 reel (re-laid out; `reel/assets` links to `assets/`), using `assets/designs-phone/` (402×874 @3× captures of the mobile layouts)
+- `fr/index.html` — the French version (Luc's / lucs.com; `fr/assets` links to `assets/`), using the `foodee_fr` capture and `assets/audio/mix_fr.wav`
 - `assets/wall/` — 17 design captures for the wall · `assets/audio/mix.wav` — mastered soundtrack
 - `tools/build_audio.py` + `tools/master_audio.sh` — music excerpt, splice, sound design, −14 LUFS master
 - `tools/capture/` — `capture_states.mjs` (rename the live designs keystroke by keystroke) and `composite_states.py` (freeze everything but the name; writes `assets/designs/` + `meta.json`, inlined as `META` in index.html)
@@ -25,4 +26,8 @@ ffmpeg -i ../out/fixbyte-studio-promo-voiceover.mp4 -i assets/audio/mix_vo.wav -
 # reel (1080x1920): phone captures of the three designs, same timeline and soundtrack
 CHROME=<headless-shell> node tools/capture/capture_states.mjs <dir> --phone && python3 tools/capture/composite_states.py <dir> --phone
 PATH=../.tools:$PATH npx hyperframes render reel --quality delivery --fps 30 -o ../out/fixbyte-studio-promo-reel.mp4
+# French version: Foodee retyped as Luc's, one tick less on the URL and the name
+CHROME=<headless-shell> node tools/capture/capture_states.mjs <dir> foodee_fr && python3 tools/capture/composite_states.py <dir> foodee_fr
+FR=1 python3 tools/build_audio.py && IN=assets/audio/mix_fr_raw.wav OUT=assets/audio/mix_fr.wav ./tools/master_audio.sh
+PATH=../.tools:$PATH npx hyperframes render fr --quality delivery --fps 30 -o ../out/fixbyte-studio-promo-fr.mp4
 ```

@@ -12,7 +12,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FFMPEG = os.path.join(ROOT, "..", ".tools", "ffmpeg")
 MUSIC = os.path.join(ROOT, "..", "assets", "music", "gs4u_syntheticwarpath.mp3")
-OUT = os.path.join(ROOT, "assets", "audio", "mix_raw.wav")
+# FR=1: French version (fr/) — lucs.com and Luc's have one letter less each
+FR = os.environ.get("FR") == "1"
+OUT = os.path.join(ROOT, "assets", "audio", "mix_fr_raw.wav" if FR else "mix_raw.wav")
 rng = np.random.default_rng(7)
 
 
@@ -149,7 +151,7 @@ def reverse_swell(d=0.42):
 
 
 # --- opening: rosas.com typed into the address bar (as tools/build_intro_sfx.py, intro 2)
-for k in range(9):
+for k in range(8 if FR else 9):
     place(tick(1.0 + rng.uniform(-0.08, 0.08)), 0.42 + k * 0.085, rng.uniform(-0.1, 0.1), 0.34 + rng.uniform(-0.05, 0.05))
 place(tick(0.7), 1.35, 0, 0.55)                                   # enter
 place(whoosh(0.9, 2400, 2600, 300, 0.1), 1.4, 0, 0.08)            # pull back to the window
@@ -162,7 +164,7 @@ place(whoosh(0.40, 500, 4200, 1200, 0.85), 7.6, 0, 0.22)
 
 # typing: (select time, delete time, first letter time, step, count, pan)
 TYPE = [
-    (8.45, 8.75, 8.95, 0.090, 6, 0.0),      # Rosa's       (Foodee)
+    (8.45, 8.75, 8.95, 0.090, 5 if FR else 6, 0.0),  # Rosa's / Luc's (Foodee)
     (10.85, 11.05, 11.15, 0.050, 11, -0.2), # MAISON NOOR  (Cantara)
     (13.55, 13.80, 13.92, 0.065, 12, 0.0),  # AZUR VOYAGES (Dar Al Khalily)
 ]
